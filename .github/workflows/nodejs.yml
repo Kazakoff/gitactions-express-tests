@@ -8,7 +8,9 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
+  issues:
+    types: [opened, edited]
+    
 jobs:
   build:
 
@@ -26,4 +28,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build --if-present
-    - run: npm test
+    
+    - name: Run the tests and generate coverage report
+      run: npm test --coverage
+      
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v4
+      with:
+       name: code-coverage-report
+       path: coverage/
